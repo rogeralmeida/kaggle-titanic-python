@@ -42,8 +42,3 @@ exec { "install easy_install":
     creates => "/usr/bin/easy_install",
     require  => Package["python-dev"],
 }
-
-exec { "install beautifulsoup4":
-    command => "/usr/local/bin/easy_install beautifulsoup4",
-    require => Exec["install easy_install"],
-}
