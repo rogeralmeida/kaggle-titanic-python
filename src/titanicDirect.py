@@ -8,7 +8,7 @@ def extract_y(data):
 	y = np.asarray(data[:, 1], dtype=np.float32)
 	return np.reshape(y, -1)
 
-def extract_x(data, columns_2_remove=[0, 1, 3, 6, 7, 8, 9, 10, 11]):
+def extract_x(data, columns_2_remove=[0, 1, 3, 8, 10]):
 	relevant_features = np.delete(data, columns_2_remove, 1)
 	relevant_features = convert_texts(relevant_features)
 	relevant_features=np.asarray(relevant_features, dtype=np.float32)
@@ -18,6 +18,9 @@ def convert_texts(data):
 	data[data == 'male']=1.
 	data[data == 'female']=2.
 	data[data == '']=0.
+	data[data == 'C']=1.
+	data[data == 'Q']=2.
+	data[data == 'S']=3.
 	return data
 
 
@@ -40,6 +43,12 @@ class LinearSVCHipotesys:
 			i+=1
 		return (match_count / validation_data.shape[0])
 
+	def predict(self, train_data):
+		x = extract_x(train_data, [0, 2, 7, 9])
+		print "Prestes a prever o resultado para:"
+		print x
+		self.linearSVC.predict(x)
+
 class LogisticRegressionHipotesys:
 
 	def __init__(self, penalty, tol, c, fit_intercept, intercept_scaling):
@@ -61,6 +70,13 @@ class LogisticRegressionHipotesys:
 			i+=1
 		return (match_count / validation_data.shape[0])
 
+
+	def predict(self, train_data):
+		x = extract_x(train_data, [0, 2, 7, 9])
+		print "Prestes a prever o resultado para:"
+		print x
+		self.logisticRegression.predict(x)
+
 def load_csv(file_name='train.csv'):
 	csv_file_object = csv.reader(open(file_name, 'rb')) #Load in the csv file
 	header = csv_file_object.next() #Skip the fist line as it is a header
@@ -69,7 +85,6 @@ def load_csv(file_name='train.csv'):
 	for row in csv_file_object: #Skip through each row in the csv file
 	    the_data.append(row[:]) #adding each row to the data variable
 	return np.array(the_data)
-
 
 train_data = load_csv('train.csv')
 
@@ -144,6 +159,9 @@ for penalty in ['l1', 'l2']:
 							Bwinner_c = c
 							Bwinner_penalty = penalty
 
+print "===================================================="
+print "===================Resultados======================="
+print "===================================================="
 print 'Logistic Regression Max precision was'
 print winner
 print 'parameters'
@@ -157,3 +175,26 @@ print 'parameters'
 print Bwinner_penalty
 print Bwinner_tol
 print Bwinner_c
+
+final_penalty = winner_penalty
+final_tol = winner_tol
+final_c = winner_c
+test_data = load_csv('test.csv')
+validation_size = math.floor(test_data.shape[0] * 0.2)
+validation_data = np.asarray(test_data[:validation_size, :])
+if Bwinner > winner:
+	final_penalty = Bwinner_penalty
+	final_tol = Bwinner_tol
+	final_c = Bwinner_c
+
+if winner > Bwinner:
+	hipotesys = LogisticRegressionHipotesys(final_penalty, final_tol, final_c, True, 0.5)
+else:
+	hipotesys = LinearSVCHipotesys(final_c, 'l2', 'l2', final_tol, True, 0.5)
+
+final_result = hipotesys.predict(test_data)
+print ""
+print final_result
+
+	
+	
