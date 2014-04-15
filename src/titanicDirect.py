@@ -34,14 +34,7 @@ class LinearSVCHipotesys:
 		self.linearSVC.fit(x, y)
 		validation_y = extract_y(validation_data)
 		validation_x = extract_x(validation_data)
-		resultant_y = self.linearSVC.predict(validation_x)
-		i = 0
-		match_count = 0.0
-		for survived in resultant_y:
-			if validation_y[i] == resultant_y[i]:
-				match_count += 1
-			i+=1
-		return (match_count / validation_data.shape[0])
+		return self.linearSVC.score(validation_x, validation_y)
 
 	def predict(self, train_data):
 		x = extract_x(train_data, [0, 2, 7, 9])
@@ -61,14 +54,7 @@ class LogisticRegressionHipotesys:
 		self.logisticRegression.fit(x, y)
 		validation_y = extract_y(validation_data)
 		validation_x = extract_x(validation_data)
-		resultant_y = self.logisticRegression.predict(validation_x)
-		i = 0
-		match_count = 0.0
-		for survived in resultant_y:
-			if validation_y[i] == resultant_y[i]:
-				match_count += 1
-			i+=1
-		return (match_count / validation_data.shape[0])
+		return self.logisticRegression.score(validation_x, validation_y)
 
 
 	def predict(self, train_data):
@@ -175,26 +161,3 @@ print 'parameters'
 print Bwinner_penalty
 print Bwinner_tol
 print Bwinner_c
-
-final_penalty = winner_penalty
-final_tol = winner_tol
-final_c = winner_c
-test_data = load_csv('test.csv')
-validation_size = math.floor(test_data.shape[0] * 0.2)
-validation_data = np.asarray(test_data[:validation_size, :])
-if Bwinner > winner:
-	final_penalty = Bwinner_penalty
-	final_tol = Bwinner_tol
-	final_c = Bwinner_c
-
-if winner > Bwinner:
-	hipotesys = LogisticRegressionHipotesys(final_penalty, final_tol, final_c, True, 0.5)
-else:
-	hipotesys = LinearSVCHipotesys(final_c, 'l2', 'l2', final_tol, True, 0.5)
-
-final_result = hipotesys.predict(test_data)
-print ""
-print final_result
-
-	
-	
