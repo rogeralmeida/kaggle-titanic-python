@@ -34,11 +34,15 @@ class SVCHipotesys(Hypothesis):
 
 	def train(self):
 		highest_precision = 0
-		hipothesys = SVC(C=1.0, kernel='rbf', degree=3, gamma=0.0, coef0=0.0, shrinking=True, probability=False, tol=0.001, cache_size=200, class_weight=None, verbose=False, max_iter=-1, random_state=None)
-		precision = self.calculatePrecision(hipothesys)
-		if precision > highest_precision:
-			self.hipothesys = hipothesys 
-			self.precision = precision
+		for c in np.arange(0.1, 2.5, 0.1):
+			hipothesys = SVC(C=c, kernel='rbf', degree=3, gamma=0.0, coef0=0.0, shrinking=True, probability=False, tol=0.001, cache_size=200, class_weight=None, verbose=False, max_iter=-1, random_state=None)
+			precision = self.calculatePrecision(hipothesys)
+			if precision > highest_precision:
+				self.hipothesys = hipothesys 
+				self.precision = precision
+				highest_precision = precision
+				print "nova precisao SVC: %f" % precision
+				print "hipothesys: %s" % hipothesys
 
 	def predict(self, test_data):
 		x = self.extract_x(test_data, [0, 2, 7, 9])
