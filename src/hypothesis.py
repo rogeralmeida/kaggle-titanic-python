@@ -7,6 +7,8 @@ class Hypothesis:
     self.trainX = self.extract_x(train_data)
     self.validationY = self.extract_y(validation_data)
     self.validationX = self.extract_x(validation_data)
+    self.trainX = scale(self.trainX)
+    self.validationX = scale(self.validationX)
 
   def extract_y(self, data):
     y = np.asarray(data[:, 1], dtype=np.float32)

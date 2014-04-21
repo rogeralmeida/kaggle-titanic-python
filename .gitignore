@@ -1,2 +1,4 @@
 *.sublime-*
 .vagrant/
+src/final_result.csv
+src/hypothesis.pyc
