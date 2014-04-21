@@ -1,9 +1,12 @@
 import numpy as np
+from sklearn.preprocessing import scale
 class Hypothesis:
 
   def __init__(self, train_data, validation_data):
-    self.train_data = train_data
-    self.validation_data = validation_data
+    self.trainY = self.extract_y(train_data)
+    self.trainX = self.extract_x(train_data)
+    self.validationY = self.extract_y(validation_data)
+    self.validationX = self.extract_x(validation_data)
 
   def extract_y(self, data):
     y = np.asarray(data[:, 1], dtype=np.float32)
@@ -50,12 +53,8 @@ class Hypothesis:
     return self.precision
 
   def calculatePrecision(self, hipothesys):
-    y = self.extract_y(self.train_data)
-    x = self.extract_x(self.train_data)
-    hipothesys.fit(x, y)
-    validation_y = self.extract_y(self.validation_data)
-    validation_x = self.extract_x(self.validation_data)
-    return hipothesys.score(validation_x, validation_y) 
+    hipothesys.fit(self.trainX, self.trainY)
+    return hipothesys.score(self.validationX, self.validationY) 
 
   def predict(self, test_data):
     x = self.extract_x(test_data, [0, 2, 7, 9])
