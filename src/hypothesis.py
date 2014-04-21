@@ -36,20 +36,31 @@ class Hypothesis:
             while local_intercept_scaling <= 2:
               for local_loss in ['l1', 'l2']:
                 if self.valid_parameters(local_c, local_loss, local_penalty, local_tol, local_fit_intercept, local_intercept_scaling):
-                  hypothesis = self.create_hypothesis(local_c, local_loss, local_penalty, local_tol, local_fit_intercept, local_intercept_scaling)
-                  self.calculatePrecision(hypothesis)
-                else:
-                  hypothesis = None
+                  hipothesys = self.create_hipothesys(local_c, local_loss, local_penalty, local_tol, local_fit_intercept, local_intercept_scaling)
+                  precision = self.calculatePrecision(hipothesys)
+                  if precision > highest_precision:
+                    self.hipothesys = hipothesys
+                    self.precision = precision
+                    highest_precision = precision
                 local_tol += 0.01
                 local_c += 0.01
                 local_intercept_scaling += 0.01
 
-  def calculatePrecision(self, hypothesis):
+  def score(self):
+    return self.precision
+
+  def calculatePrecision(self, hipothesys):
     y = self.extract_y(self.train_data)
     x = self.extract_x(self.train_data)
-    hypothesis.fit_transform(x, y)
-
+    hipothesys.fit(x, y)
     validation_y = self.extract_y(self.validation_data)
     validation_x = self.extract_x(self.validation_data)
+    return hipothesys.score(validation_x, validation_y) 
 
-    return hypothesis.score(validation_x, validation_y) 
+  def predict(self, test_data):
+    x = self.extract_x(test_data, [0, 2, 7, 9])
+    predicted = self.hipothesys.predict(x)
+    resultado = np.empty([test_data.shape[0], 2], dtype=int)
+    resultado[:, 0] = test_data[:, 0]
+    resultado[:, 1] = predicted.astype('int')
+    return resultado
