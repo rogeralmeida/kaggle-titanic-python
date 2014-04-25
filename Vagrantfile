@@ -11,6 +11,9 @@ Vagrant.configure("2") do |config|
   config.vm.box = "Ubuntu 12.10 Quantal x86_64"
   config.vm.box_url = "https://github.com/downloads/roderik/VagrantQuantal64Box/quantal64.box"
 
+  config.ssh.forward_agent = true
+  config.ssh.forward_x11 = true
+
   # Forward a port from the guest to the host, which allows for outside
   # computers to access the VM, whereas host only networking does not.
   #config.vm.forward_port 80, 8080
