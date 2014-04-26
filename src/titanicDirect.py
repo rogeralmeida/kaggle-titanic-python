@@ -45,7 +45,7 @@ class SVCHipotesys(Hypothesis):
 				print "hipothesys: %s" % hipothesys
 
 	def predict(self, test_data):
-		x = self.extract_x(test_data, [0, 2, 7, 9])
+		x = self.extract_x(test_data, [0, 2, 4, 7, 9])
 		predicted = self.hipothesys.predict(x)
 		resultado = np.empty([test_data.shape[0], 2], dtype=int)
 		resultado[:, 0] = test_data[:, 0]

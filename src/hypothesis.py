@@ -14,7 +14,7 @@ class Hypothesis:
     y = np.asarray(data[:, 1], dtype=np.float32)
     return np.reshape(y, -1)
 
-  def extract_x(self, data, columns_2_remove=[0, 1, 3, 8, 10]):
+  def extract_x(self, data, columns_2_remove=[0, 1, 3, 5, 8, 10]):
     relevant_features = np.delete(data, columns_2_remove, 1)
     relevant_features = self.convert_texts(relevant_features)
     relevant_features=np.asarray(relevant_features, dtype=np.float32)
@@ -59,7 +59,7 @@ class Hypothesis:
     return hipothesys.score(self.validationX, self.validationY) 
 
   def predict(self, test_data):
-    x = self.extract_x(test_data, [0, 2, 7, 9])
+    x = self.extract_x(test_data, [0, 2, 4, 7, 9])
     predicted = self.hipothesys.predict(x)
     resultado = np.empty([test_data.shape[0], 2], dtype=int)
     resultado[:, 0] = test_data[:, 0]
